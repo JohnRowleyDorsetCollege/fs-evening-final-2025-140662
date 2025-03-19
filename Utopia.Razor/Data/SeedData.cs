@@ -36,11 +36,11 @@ namespace Utopia.Razor.Data
                     }
                 }
 
-
+                string password = "Admin@123";
                 string userName = "admin01@healthapp.com";
                 if (await userManager.FindByEmailAsync(userName) == null)
                 {
-                    string password = "Admin@123";
+
                     var user = new IdentityUser { UserName = userName, Email = userName, EmailConfirmed = true };
                     await userManager.CreateAsync(user, password);
                     await userManager.AddToRoleAsync(user, HealthAppRoles.Admin);
@@ -48,22 +48,18 @@ namespace Utopia.Razor.Data
 
                 var faker = new Faker();
 
-                for (int i = 1; i <= 5; i++)
+                for (int i = 0; i < 10; i++)
                 {
-                    string doctorName = $"dr-{i}-{faker.Name.FirstName()}";
-
-                    string doctorEmail = faker.Internet.Email().ToLower();
+                    string doctorName = faker.Name.FirstName();  
+                    string doctorEmail = $"{doctorName}@healthapp.com";
                     Console.WriteLine(doctorEmail);
                     if (await userManager.FindByEmailAsync(doctorEmail) == null)
                     {
                         Console.WriteLine($"Email {doctorEmail} is being created");
-                        string password = "Doctor@123";
-                        var user = new IdentityUser { UserName = doctorName, Email = doctorEmail, EmailConfirmed = true };
 
-                        if (user is null)
-                        {
-                            Console.WriteLine($"Email {doctorEmail} failed to create");
-                        }
+                        var user = new IdentityUser { UserName = doctorEmail, Email = doctorEmail.ToLower(), EmailConfirmed = true };
+
+
                         await userManager.CreateAsync(user, password);
                         await userManager.AddToRoleAsync(user, HealthAppRoles.Doctor);
                     }
@@ -71,24 +67,31 @@ namespace Utopia.Razor.Data
                     {
                         Console.WriteLine($"Email {doctorEmail} exists");
                     }
-
                 }
 
-                for (int i = 1; i <= 5; i++)
+                for (int i = 0; i < 10; i++)
                 {
-
-                    string patientName = $"pt-{i}-{faker.Name.FirstName()}";
-                    string patientEmail = $"pat{i}.{faker.Internet.Email()}";
-                    Console.WriteLine(patientEmail);
-                    if (await userManager.FindByEmailAsync(patientEmail) == null)
+                    string doctorName = faker.Name.FirstName();
+                    string doctorEmail = $"pt-{doctorName}@healthappdr.com";
+                    Console.WriteLine(doctorEmail);
+                    if (await userManager.FindByEmailAsync(doctorEmail) == null)
                     {
-                        string password = "Patient@123";
-                        var user = new IdentityUser { UserName = patientName, Email = patientEmail, EmailConfirmed = true };
+                        Console.WriteLine($"Email {doctorEmail} is being created");
+
+                        var user = new IdentityUser { UserName = doctorEmail, Email = doctorEmail.ToLower(), EmailConfirmed = true };
+
+
                         await userManager.CreateAsync(user, password);
                         await userManager.AddToRoleAsync(user, HealthAppRoles.Patient);
                     }
-
+                    else
+                    {
+                        Console.WriteLine($"Email {doctorEmail} exists");
+                    }
                 }
+
+
+
             }
 
         }
