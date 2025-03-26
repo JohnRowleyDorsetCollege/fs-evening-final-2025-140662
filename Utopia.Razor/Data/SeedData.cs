@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Identity;
+using Utopia.Razor.Models;
 
 namespace Utopia.Razor.Data
 {
@@ -36,7 +37,7 @@ namespace Utopia.Razor.Data
                     }
                 }
 
-                string password = "Admin@123";
+                string password = "Letmein01*";
                 string userName = "admin01@healthapp.com";
                 if (await userManager.FindByEmailAsync(userName) == null)
                 {
@@ -46,47 +47,117 @@ namespace Utopia.Razor.Data
                     await userManager.AddToRoleAsync(user, HealthAppRoles.Admin);
                 }
 
-                var faker = new Faker();
 
-                for (int i = 0; i < 10; i++)
+                string doctor = "doctor01@healthapp.com";
+                if (await userManager.FindByEmailAsync(doctor) == null)
                 {
-                    string doctorName = faker.Internet.UserName();  
-                    string doctorEmail = $"{faker.Internet.ExampleEmail().ToLower()}";
-                    Console.WriteLine(doctorEmail);
-                    if (await userManager.FindByEmailAsync(doctorEmail) == null)
-                    {
-                      
-                        var user = new IdentityUser { UserName = doctorName, Email = doctorEmail.ToLower(), EmailConfirmed = true };
+
+                    var userDoctor = new IdentityUser { UserName = doctor, Email = doctor, EmailConfirmed = true };
+                    await userManager.CreateAsync(userDoctor, password);
+                    await userManager.AddToRoleAsync(userDoctor, HealthAppRoles.Doctor);
 
 
-                        await userManager.CreateAsync(user, password);
-                        await userManager.AddToRoleAsync(user, HealthAppRoles.Doctor);
-                    }
-                    else
+
+                    string patient = "patient01@healthapp.com";
+                    if (await userManager.FindByEmailAsync(patient) == null)
                     {
-                        Console.WriteLine($"Email {doctorEmail} exists");
+
+                        var userPatient = new IdentityUser { UserName = patient, Email = patient, EmailConfirmed = true };
+                        await userManager.CreateAsync(userPatient, password);
+                        await userManager.AddToRoleAsync(userPatient, HealthAppRoles.Patient);
+
+
+                        var doctorPatient = new DoctorPatient
+                        {
+                            DoctorId = userDoctor.Id,
+                            PatientId = userPatient.Id
+                        };
+
+                        context.DoctorPatient.Add(doctorPatient);
+                        await context.SaveChangesAsync();
                     }
+
+                 
+
+
+
                 }
 
-                for (int i = 0; i < 10; i++)
+                string doctor2 = "doctor02@healthapp.com";
+                if (await userManager.FindByEmailAsync(doctor2) == null)
                 {
-                    string patientName = faker.Internet.UserName();
-                    string patientEmail = $"{faker.Internet.ExampleEmail().ToLower()}";
-                    Console.WriteLine(patientEmail);
-                    if (await userManager.FindByEmailAsync(patientEmail) == null)
-                    {
-                     
-                        var user = new IdentityUser { UserName = patientName, Email = patientEmail.ToLower(), EmailConfirmed = true };
+
+                    var userDoctor = new IdentityUser { UserName = doctor2, Email = doctor2, EmailConfirmed = true };
+                    await userManager.CreateAsync(userDoctor, password);
+                    await userManager.AddToRoleAsync(userDoctor, HealthAppRoles.Doctor);
 
 
-                        await userManager.CreateAsync(user, password);
-                        await userManager.AddToRoleAsync(user, HealthAppRoles.Patient);
-                    }
-                    else
+
+                    string patient2 = "patient02@healthapp.com";
+                    if (await userManager.FindByEmailAsync(patient2) == null)
                     {
-                        Console.WriteLine($"Email {patientEmail} exists");
+
+                        var userPatient = new IdentityUser { UserName = patient2, Email = patient2, EmailConfirmed = true };
+                        await userManager.CreateAsync(userPatient, password);
+                        await userManager.AddToRoleAsync(userPatient, HealthAppRoles.Patient);
+
+
+                        var doctorPatient = new DoctorPatient
+                        {
+                            DoctorId = userDoctor.Id,
+                            PatientId = userPatient.Id
+                        };
+
+                        context.DoctorPatient.Add(doctorPatient);
+                        await context.SaveChangesAsync();
                     }
+
                 }
+
+
+
+
+                //var faker = new Faker();
+
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    string doctorName = faker.Internet.UserName();  
+                //    string doctorEmail = $"{faker.Internet.ExampleEmail().ToLower()}";
+                //    Console.WriteLine(doctorEmail);
+                //    if (await userManager.FindByEmailAsync(doctorEmail) == null)
+                //    {
+
+                //        var user = new IdentityUser { UserName = doctorName, Email = doctorEmail.ToLower(), EmailConfirmed = true };
+
+
+                //        await userManager.CreateAsync(user, password);
+                //        await userManager.AddToRoleAsync(user, HealthAppRoles.Doctor);
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine($"Email {doctorEmail} exists");
+                //    }
+                //}
+
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    string patientName = faker.Internet.UserName();
+                //    string patientEmail = $"{faker.Internet.ExampleEmail().ToLower()}";
+                //    Console.WriteLine(patientEmail);
+                //    if (await userManager.FindByEmailAsync(patientEmail) == null)
+                //    {
+
+                //        var user = new IdentityUser { UserName = patientName, Email = patientEmail.ToLower(), EmailConfirmed = true };
+
+
+                //        await userManager.CreateAsync(user, password);
+                //        await userManager.AddToRoleAsync(user, HealthAppRoles.Patient);
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine($"Email {patientEmail} exists");
+                //    }
+                //}
 
 
 
